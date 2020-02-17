@@ -1,0 +1,33 @@
+{
+  "name": "cliffhanger",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "cli-test": "ts-node -r tsconfig-paths/register src/index.ts",
+    "build": "ncc build src/index.ts -o dist",
+    "test-example": "ts-node -r tsconfig-paths/register examples/greet"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@actions/core": "^1.2.2",
+    "@actions/github": "^2.1.0",
+    "@types/cli-table": "^0.3.0",
+    "@types/colors": "^1.2.1",
+    "@types/commander": "^2.12.2",
+    "@types/js-yaml": "^3.12.2",
+    "@types/minimist": "^1.2.0",
+    "@types/minimist-options": "^3.0.0",
+    "@types/node": "^13.7.1",
+    "@zeit/ncc": "^0.21.1",
+    "ts-node": "^8.6.2",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "cli-table3": "^0.5.1",
+    "colors": "^1.4.0",
+    "minimist": "^1.2.0",
+    "minimist-options": "^4.0.2"
+  }
+}
