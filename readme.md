@@ -47,6 +47,7 @@ In progress
 ### Ci
 
 - [ ] Automatic Release to GitHub
+- [ ] Automatic Release to GitHub Packages
 - [ ] Automatic Release to NPM
 - [ ] Automatic tag on merge on master
 - [ ] Automatic beta on merge on next

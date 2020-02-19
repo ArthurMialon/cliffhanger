@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
-import Cliffhanger from "../../src"
+import { Namespace } from "../../dist"
 
-import help from "../../src/plugins/help"
+import Cliffhanger from "../../dist"
 
-const greet = {
+import help from "../../dist/plugins/help"
+
+const greet: Namespace = {
   name: "greet",
   usage: 'greet --name="your name"',
   description: "My super personal CLI",
   plugins: [help],
-  accept: [
+  option: [
     {
       title: "name",
       description: "Your name",
@@ -34,4 +36,4 @@ const CLI = {
 
 const [, , ...args] = process.argv
 
-Cliffhanger.init(CLI, args)
+Cliffhanger.execute.init(CLI, args)

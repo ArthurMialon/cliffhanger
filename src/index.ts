@@ -1,7 +1,9 @@
-import execute from "src/core/execute"
-import log from "src/core/log"
+export * from "./types"
+
+import execute from "./core/execute"
+import log from "./core/log"
 
 export default {
-  init: execute.init,
+  execute,
   log
 }
