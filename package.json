@@ -8,6 +8,10 @@
     "build": "tsc",
     "example-greet": "ts-node -r tsconfig-paths/register examples/greet"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArthurMialon/cliffhanger"
+  },
   "license": "MIT",
   "devDependencies": {
     "@actions/core": "^1.2.2",
