@@ -1,6 +1,6 @@
 import { Plugin, Namespace } from "src/types"
 
-import log from "src/core/log"
+import log from "../../core/log"
 
 import table from "./table"
 import getExposed from "./get-expose"
