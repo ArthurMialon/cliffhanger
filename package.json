@@ -4,7 +4,6 @@
   "main": "dist/index.js",
   "types": "dist/index.d.js",
   "scripts": {
-    "cli-test": "ts-node -r tsconfig-paths/register src/index.ts",
     "build": "tsc",
     "example-greet": "ts-node -r tsconfig-paths/register examples/greet",
     "example-plugin": "ts-node -r tsconfig-paths/register examples/global-plugins"
