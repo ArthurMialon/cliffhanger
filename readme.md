@@ -34,11 +34,11 @@ In progress
 
 ### Examples
 
-- [ ] Create example directory
+- [x] Create example directory
 
 ### Build
 
-- [ ] Setup build
+- [x] Setup build
 
 ### Installation
 
@@ -51,18 +51,20 @@ In progress
 - [ ] Automatic Release to NPM
 - [ ] Automatic tag on merge on master
 - [ ] Automatic beta on merge on next
-- [ ] Release first version to npm
+- [x] Release first version to npm
 
 ### Core
 
 - [ ] Add jest testing
 - [ ] Add test to examples to prevent breaking changes
-- [ ] Create a hook system
+- [x] Create a hook system
+- [ ] Improve Runners and accept more options (raw, hooks result etc..)
 
 ### Plugins System
 
-- [ ] Add a global plugin to enhance every sub commands
+- [x] Add a global plugin to enhance every sub commands
 - [ ] Generate api from Namespace to use it programatically (how to handle response ?)
+- [ ] Automatically generate types too
 
 ### Plugin Ideas
 

@@ -23,12 +23,30 @@ const init = (namespace: Namespace, options: string[]) => {
  * Enhance a Namespace by running Plugins on it.
  *
  * @param namespace - Namespace to run
+ * @param globalPlugins - Parents plugins
  * @returns namespace - Enhance namespace with plugins
  */
 const execPlugins = (namespace: Namespace, globalPlugins: Plugin[] = []) => {
   const plugins = globalPlugins.concat(namespace.plugins || [])
 
   return plugins.reduce((acc: Namespace, plugin) => plugin(acc), namespace)
+}
+
+/**
+ * Get hooks from a namespace
+ *
+ * @param namespace - Namespace to run
+ * @returns hooks - get all available hooks
+ */
+const getHooks = (namespace: Namespace) => {
+  const { hooks = {} } = namespace
+
+  const baseHooks = {
+    before: (parameters?: any) => parameters,
+    after: (parameters?: any) => parameters
+  }
+
+  return { ...baseHooks, ...hooks }
 }
 
 /**
@@ -70,7 +88,10 @@ const buildFlags = (namespace: Namespace, flags: { [key: string]: any }) =>
  * @param namespace - Namespace to run
  * @param args - Arguments parsed from minimist
  */
-const runCommand = (namespace: Namespace, args: ParsedArgs): any => {
+const runCommand = async (
+  namespace: Namespace,
+  args: ParsedArgs
+): Promise<any> => {
   const { _: commands, ...flags } = args
 
   // setup debug mode
@@ -124,26 +145,34 @@ const runCommand = (namespace: Namespace, args: ParsedArgs): any => {
     if (runnable.parent?.acceptSubb) {
       const buildedFlags = buildFlags(runnable.namespace, flags)
 
-      return runnable.parent.run({
+      const parameters = {
         ...buildedFlags,
         subCommand: runnable.askedCommand
-      })
+      }
+
+      const { before, after } = getHooks(runnable.parent)
+
+      await before(parameters)
+      await runnable.parent.run(parameters)
+      return after(parameters)
     }
 
-    console.error(
+    return console.error(
       `command <${runnable.askedCommand}> not found in namespace ${runnable.namespace.name}\n`
     )
-
-    const helper = runnable.namespace.expose?.find(c => c.name === "help")
-
-    return helper ? helper.run(flags) : null
   }
-
-  if (!runnable.namespace.option) return runnable.namespace.run({})
 
   const buildedFlags = buildFlags(runnable.namespace, flags)
 
-  return runnable.namespace.run(buildedFlags)
+  const parameters = buildedFlags
+
+  const { before, after } = getHooks(runnable.namespace)
+
+  await before(parameters)
+
+  await runnable.namespace.run(parameters)
+
+  return after(parameters)
 }
 
 export default { runCommand, init }

@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
-import { Namespace } from "../../dist"
+import { Namespace } from "../../src"
 
-import Cliffhanger from "../../dist"
+import Cliffhanger from "../../src"
 
-import help from "../../dist/plugins/help"
+import help from "../../src/plugins/help"
 
 const greet: Namespace = {
   name: "greet",

@@ -17,6 +17,8 @@ export type Runner = RunnerWithFlags | RunnerWithoutFlags
 
 export type Plugin = (n: Namespace) => Namespace
 
+export type Hook = Runner
+
 export interface Option {
   title: string
   description: string
@@ -31,6 +33,10 @@ export interface Namespace {
   option?: Option[]
   plugins?: Plugin[]
   globalPlugins?: Plugin[]
+  hooks?: {
+    after?: Hook
+    before?: Hook
+  }
   acceptSubb?: boolean
   expose?: Array<Namespace>
   run: Runner

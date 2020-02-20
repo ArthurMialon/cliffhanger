@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "example-greet": "ts-node -r tsconfig-paths/register examples/greet",
-    "example-plugin": "ts-node -r tsconfig-paths/register examples/global-plugins"
+    "example-plugin": "ts-node -r tsconfig-paths/register examples/global-plugins",
+    "example-hooks": "ts-node -r tsconfig-paths/register examples/hooks"
   },
   "repository": {
     "type": "git",
