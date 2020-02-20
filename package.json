@@ -6,7 +6,8 @@
   "scripts": {
     "cli-test": "ts-node -r tsconfig-paths/register src/index.ts",
     "build": "tsc",
-    "example-greet": "ts-node -r tsconfig-paths/register examples/greet"
+    "example-greet": "ts-node -r tsconfig-paths/register examples/greet",
+    "example-plugin": "ts-node -r tsconfig-paths/register examples/global-plugins"
   },
   "repository": {
     "type": "git",

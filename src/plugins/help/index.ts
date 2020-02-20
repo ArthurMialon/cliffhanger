@@ -26,7 +26,7 @@ const run = (namespace: Namespace) => () => {
 
   const helpDescription = table({
     title: "Description:",
-    values: [[`${namespace.name}: ${namespace.description}`]]
+    values: [[namespace.description]]
   })
 
   log.log(...helpDescription, SEPARATOR)

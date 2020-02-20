@@ -1,4 +1,4 @@
-import { Namespace } from "src/types"
+import { Namespace, Plugin } from "src/types"
 
 import { ParsedArgs } from "minimist"
 import minimist from "minimist"
@@ -25,13 +25,10 @@ const init = (namespace: Namespace, options: string[]) => {
  * @param namespace - Namespace to run
  * @returns namespace - Enhance namespace with plugins
  */
-const execPlugins = (namespace: Namespace) => {
-  if (!namespace.plugins) return namespace
+const execPlugins = (namespace: Namespace, globalPlugins: Plugin[] = []) => {
+  const plugins = globalPlugins.concat(namespace.plugins || [])
 
-  return namespace.plugins.reduce(
-    (acc: Namespace, plugin) => plugin(acc),
-    namespace
-  )
+  return plugins.reduce((acc: Namespace, plugin) => plugin(acc), namespace)
 }
 
 /**
@@ -88,10 +85,13 @@ const runCommand = (namespace: Namespace, args: ParsedArgs): any => {
         namespace: Namespace
         askedCommand: string
         parent?: Namespace
+        plugins?: Plugin[]
       },
       command
     ) => {
-      const { notFoundInNamespace, namespace } = acc
+      const { notFoundInNamespace, namespace, plugins = [] } = acc
+
+      acc.plugins = plugins.concat(namespace.globalPlugins || [])
 
       if (notFoundInNamespace) return acc
 
@@ -100,7 +100,7 @@ const runCommand = (namespace: Namespace, args: ParsedArgs): any => {
       if (subCommand) {
         return {
           notFoundInNamespace: false,
-          namespace: execPlugins(subCommand),
+          namespace: execPlugins(subCommand, acc.plugins),
           askedCommand: command
         }
       }
@@ -114,8 +114,9 @@ const runCommand = (namespace: Namespace, args: ParsedArgs): any => {
     },
     {
       notFoundInNamespace: false,
-      namespace: execPlugins(namespace),
-      askedCommand: namespace.name
+      namespace: execPlugins(namespace, namespace.globalPlugins),
+      askedCommand: namespace.name,
+      plugins: []
     }
   )
 

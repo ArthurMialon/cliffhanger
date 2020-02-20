@@ -30,6 +30,7 @@ export interface Namespace {
   description: string
   option?: Option[]
   plugins?: Plugin[]
+  globalPlugins?: Plugin[]
   acceptSubb?: boolean
   expose?: Array<Namespace>
   run: Runner
