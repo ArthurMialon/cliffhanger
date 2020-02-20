@@ -62,10 +62,12 @@ In progress
 ### Plugins System
 
 - [ ] Add a global plugin to enhance every sub commands
+- [ ] Generate api from Namespace to use it programatically (how to handle response ?)
 
 ### Plugin Ideas
 
 - [ ] Setup GitHub API
+- [ ] With debug plugins
 - [ ] Get Git context
 - [ ] Get KubeCtl context
 - [ ] Commander and interactive prompt plugin
