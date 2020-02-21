@@ -37,7 +37,7 @@ export interface Namespace {
     after?: Hook
     before?: Hook
   }
-  acceptSubb?: boolean
+  acceptSubCommand?: boolean
   expose?: Array<Namespace>
   run: Runner
 }

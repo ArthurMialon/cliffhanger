@@ -13,7 +13,7 @@ import minimist from "minimist"
  * @param options - Array of string like process.argv
  * @returns Might return nothing depending on the CLI execution
  */
-const init = (namespace: Namespace, options: string[]) => {
+export const init = (namespace: Namespace, options: string[]) => {
   const args: ParsedArgs = minimist(options)
 
   return runCommand(namespace, args)
@@ -26,7 +26,10 @@ const init = (namespace: Namespace, options: string[]) => {
  * @param globalPlugins - Parents plugins
  * @returns namespace - Enhance namespace with plugins
  */
-const execPlugins = (namespace: Namespace, globalPlugins: Plugin[] = []) => {
+export const execPlugins = (
+  namespace: Namespace,
+  globalPlugins: Plugin[] = []
+) => {
   const plugins = globalPlugins.concat(namespace.plugins || [])
 
   return plugins.reduce((acc: Namespace, plugin) => plugin(acc), namespace)
@@ -38,7 +41,7 @@ const execPlugins = (namespace: Namespace, globalPlugins: Plugin[] = []) => {
  * @param namespace - Namespace to run
  * @returns hooks - get all available hooks
  */
-const getHooks = (namespace: Namespace) => {
+export const getHooks = (namespace: Namespace) => {
   const { hooks = {} } = namespace
 
   const baseHooks = {
@@ -56,8 +59,11 @@ const getHooks = (namespace: Namespace) => {
  * @param flags - List of flags from minimise
  * @returns buildedFlags - flags object to pass to run
  */
-const buildFlags = (namespace: Namespace, flags: { [key: string]: any }) =>
-  (namespace.option || [])
+export const buildFlags = (
+  namespace: Namespace,
+  flags: { [key: string]: any }
+) => {
+  const nsFlags = (namespace.option || [])
     .map(item => {
       const fromOption = () => {
         const keys = Object.keys(flags)
@@ -82,13 +88,16 @@ const buildFlags = (namespace: Namespace, flags: { [key: string]: any }) =>
       {}
     )
 
+  return { ...flags, ...nsFlags }
+}
+
 /**
  * Will pass through a namespace and trigger the associate runner
  *
  * @param namespace - Namespace to run
  * @param args - Arguments parsed from minimist
  */
-const runCommand = async (
+export const runCommand = async (
   namespace: Namespace,
   args: ParsedArgs
 ): Promise<any> => {
@@ -142,7 +151,7 @@ const runCommand = async (
   )
 
   if (runnable.notFoundInNamespace) {
-    if (runnable.parent?.acceptSubb) {
+    if (runnable.parent?.acceptSubCommand) {
       const buildedFlags = buildFlags(runnable.namespace, flags)
 
       const parameters = {
