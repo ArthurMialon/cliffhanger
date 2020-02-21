@@ -198,42 +198,6 @@ describe("Execute", () => {
     })
   })
 
-  describe("Hooks", () => {
-    it("should get default hooks", () => {
-      const run = jest.fn()
-      const namespace: Namespace = {
-        name: "test",
-        description: "test desc",
-        run
-      }
-
-      const hooks = getHooks(namespace)
-
-      const args = { test: "test" }
-
-      expect(hooks.before(args)).toBe(args)
-      expect(hooks.after(args)).toBe(args)
-    })
-
-    it("should get custom hooks", () => {
-      const run = jest.fn()
-      const before = jest.fn()
-      const after = jest.fn()
-
-      const namespace: Namespace = {
-        name: "test",
-        description: "test desc",
-        hooks: { before, after },
-        run
-      }
-
-      const hooks = getHooks(namespace)
-
-      expect(hooks.before).toBe(before)
-      expect(hooks.after).toBe(after)
-    })
-  })
-
   describe("Flags", () => {
     it("should return all flags", () => {
       const run = jest.fn()

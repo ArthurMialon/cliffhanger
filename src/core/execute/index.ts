@@ -36,23 +36,6 @@ export const execPlugins = (
 }
 
 /**
- * Get hooks from a namespace
- *
- * @param namespace - Namespace to run
- * @returns hooks - get all available hooks
- */
-export const getHooks = (namespace: Namespace) => {
-  const { hooks = {} } = namespace
-
-  const baseHooks = {
-    before: (parameters?: any) => parameters,
-    after: (parameters?: any) => parameters
-  }
-
-  return { ...baseHooks, ...hooks }
-}
-
-/**
  * Build flags from minimist parsing to options mapping in the namespace
  *
  * @param namespace - Namespace to run
@@ -159,11 +142,7 @@ export const runCommand = async (
         subCommand: runnable.askedCommand
       }
 
-      const { before, after } = getHooks(runnable.parent)
-
-      await before(parameters)
-      await runnable.parent.run(parameters)
-      return after(parameters)
+      return runnable.parent.run(parameters)
     }
 
     return console.error(
@@ -175,13 +154,7 @@ export const runCommand = async (
 
   const parameters = buildedFlags
 
-  const { before, after } = getHooks(runnable.namespace)
-
-  await before(parameters)
-
-  await runnable.namespace.run(parameters)
-
-  return after(parameters)
+  return runnable.namespace.run(parameters)
 }
 
 export default { runCommand, init }

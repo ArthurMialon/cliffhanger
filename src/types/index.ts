@@ -19,6 +19,11 @@ export type Plugin = (n: Namespace) => Namespace
 
 export type Hook = Runner
 
+export interface Hooks {
+  after?: Hook
+  before?: Hook
+}
+
 export interface Option {
   title: string
   description: string
@@ -33,10 +38,6 @@ export interface Namespace {
   option?: Option[]
   plugins?: Plugin[]
   globalPlugins?: Plugin[]
-  hooks?: {
-    after?: Hook
-    before?: Hook
-  }
   acceptSubCommand?: boolean
   expose?: Array<Namespace>
   run: Runner

@@ -55,7 +55,7 @@ In progress
 
 ### Core
 
-- [ ] Add jest testing
+- [x] Add jest testing
 - [ ] Add test to examples to prevent breaking changes
 - [x] Create a hook system
 - [ ] Improve Runners and accept more options (raw, hooks result etc..)
@@ -70,6 +70,6 @@ In progress
 
 - [ ] Setup GitHub API
 - [ ] With debug plugins
-- [ ] Get Git context
+- [ ] Get Git context (via NodeGit)
 - [ ] Get KubeCtl context
 - [ ] Commander and interactive prompt plugin

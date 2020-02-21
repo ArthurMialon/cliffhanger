@@ -3,18 +3,21 @@
 import { Namespace } from "../../src"
 
 import Cliffhanger from "../../src"
+import hooks from "../../src/plugins/hooks"
 
 const CLI: Namespace = {
   name: "hello",
   description: "My super personal CLI",
-  hooks: {
-    before: () => {
-      Cliffhanger.log.info("Before Hook")
-    },
-    after: () => {
-      Cliffhanger.log.info("After Hook")
-    }
-  },
+  plugins: [
+    hooks({
+      before: () => {
+        Cliffhanger.log.info("Before Hook")
+      },
+      after: () => {
+        Cliffhanger.log.info("After Hook")
+      }
+    })
+  ],
   run: () => {
     return Cliffhanger.log.success("An awesome CLI created with Cliffhanger")
   }
