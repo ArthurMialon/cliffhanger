@@ -2,6 +2,7 @@ import { Namespace, Plugin } from "src/types"
 
 /**
  * Enhance a Namespace by running Plugins on it.
+ * See it as a compose function
  *
  * @param namespace - Namespace to run
  * @param globalPlugins - Parents plugins

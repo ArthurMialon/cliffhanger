@@ -346,7 +346,7 @@ describe("Execute", () => {
   })
 
   describe("Runner build", () => {
-    it("should return the error on prepared Namespace", () => {
+    it("should return the error on prepared Namespace with error", () => {
       const run = jest.fn()
 
       const ns: Namespace = {
@@ -411,7 +411,7 @@ describe("Execute", () => {
       })
     })
 
-    it("should return the right prepared Namespace", () => {
+    it("should return the right prepared Namespace with exposed", () => {
       const run = jest.fn()
 
       const exposed = {

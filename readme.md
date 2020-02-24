@@ -39,6 +39,7 @@ In progress
 ### Build
 
 - [x] Setup build
+- [ ] What about using lerna to deploy multiples packages and plugins
 
 ### Installation
 
