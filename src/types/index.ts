@@ -1,16 +1,18 @@
-declare global {
-  namespace NodeJS {
-    interface Global {
-      debug: boolean
-    }
-  }
-}
-
 export interface BuildedFlags {
   [key: string]: any
 }
 
-export type RunnerWithFlags = (flags: BuildedFlags) => Promise<any> | any
+export type Flags = {
+  [key: string]: any
+}
+
+export interface RunnerParams {
+  options: Flags
+  rawFlags: Flags
+  subCommand?: string
+}
+
+export type RunnerWithFlags = (arg0: RunnerParams) => Promise<any> | any
 export type RunnerWithoutFlags = () => Promise<any> | any
 
 export type Runner = RunnerWithFlags | RunnerWithoutFlags
@@ -35,7 +37,7 @@ export interface Namespace {
   name: string
   usage?: string
   description: string
-  option?: Option[]
+  options?: Option[]
   plugins?: Plugin[]
   globalPlugins?: Plugin[]
   acceptSubCommand?: boolean

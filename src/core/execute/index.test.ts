@@ -1,6 +1,10 @@
 import { Namespace, Plugin } from "src/types"
 
-import { init, execPlugins, getHooks, buildFlags } from "./index"
+import { init } from "./index"
+
+import execPlugins from "./plugin"
+import buildOptions from "./option"
+import getPreparedNamespace from "./prepared"
 
 describe("Execute", () => {
   describe("Init", () => {
@@ -16,7 +20,7 @@ describe("Execute", () => {
       await init(namespace, [])
 
       expect(run).toHaveBeenCalled()
-      expect(run).toHaveBeenCalledWith({})
+      expect(run).toHaveBeenCalledWith({ options: {}, rawFlags: {} })
     })
 
     it("should init the CLI and run the root with default params", async () => {
@@ -25,7 +29,7 @@ describe("Execute", () => {
       const namespace: Namespace = {
         name: "test",
         description: "test desc",
-        option: [
+        options: [
           {
             title: "name",
             description: "test option",
@@ -38,7 +42,12 @@ describe("Execute", () => {
       await init(namespace, [])
 
       expect(run).toHaveBeenCalled()
-      expect(run).toHaveBeenCalledWith({ name: "my_default_name" })
+      expect(run).toHaveBeenCalledWith({
+        options: {
+          name: "my_default_name"
+        },
+        rawFlags: {}
+      })
     })
 
     it("should init the CLI and run the root with arguments params", async () => {
@@ -47,7 +56,7 @@ describe("Execute", () => {
       const namespace: Namespace = {
         name: "test",
         description: "test desc",
-        option: [
+        options: [
           {
             title: "name",
             description: "test option",
@@ -60,7 +69,14 @@ describe("Execute", () => {
       await init(namespace, ["--name=my_name"])
 
       expect(run).toHaveBeenCalled()
-      expect(run).toHaveBeenCalledWith({ name: "my_name" })
+      expect(run).toHaveBeenCalledWith({
+        options: {
+          name: "my_name"
+        },
+        rawFlags: {
+          name: "my_name"
+        }
+      })
     })
 
     it("should init the CLI and run the root with arguments params even without option", async () => {
@@ -75,7 +91,12 @@ describe("Execute", () => {
       await init(namespace, ["--name=my_name"])
 
       expect(run).toHaveBeenCalled()
-      expect(run).toHaveBeenCalledWith({ name: "my_name" })
+      expect(run).toHaveBeenCalledWith({
+        options: {},
+        rawFlags: {
+          name: "my_name"
+        }
+      })
     })
 
     it("should init the CLI and run the root with a sub command and options", async () => {
@@ -91,7 +112,11 @@ describe("Execute", () => {
       await init(namespace, ["hello"])
 
       expect(run).toHaveBeenCalled()
-      expect(run).toHaveBeenCalledWith({ subCommand: "hello" })
+      expect(run).toHaveBeenCalledWith({
+        options: {},
+        rawFlags: {},
+        subCommand: "hello"
+      })
     })
 
     it("should init the CLI and run the root with a sub command", async () => {
@@ -100,7 +125,7 @@ describe("Execute", () => {
       const namespace: Namespace = {
         name: "test",
         description: "test desc",
-        option: [
+        options: [
           {
             title: "name",
             description: "test option",
@@ -114,7 +139,15 @@ describe("Execute", () => {
       await init(namespace, ["hello", "--name=my_name"])
 
       expect(run).toHaveBeenCalled()
-      expect(run).toHaveBeenCalledWith({ subCommand: "hello", name: "my_name" })
+      expect(run).toHaveBeenCalledWith({
+        options: {
+          name: "my_name"
+        },
+        rawFlags: {
+          name: "my_name"
+        },
+        subCommand: "hello"
+      })
     })
 
     it("should init the CLI and return error for unknown command", async () => {
@@ -212,7 +245,10 @@ describe("Execute", () => {
         hello: "world"
       }
 
-      expect(buildFlags(namespace, flags)).toEqual({ hello: "world" })
+      expect(buildOptions(namespace, flags)).toEqual({
+        options: {},
+        rawFlags: flags
+      })
     })
 
     it("should return all flags and option", () => {
@@ -221,7 +257,7 @@ describe("Execute", () => {
       const namespace: Namespace = {
         name: "test",
         description: "test desc",
-        option: [
+        options: [
           {
             title: "name",
             description: "flag desc",
@@ -236,9 +272,11 @@ describe("Execute", () => {
         name: "my_name"
       }
 
-      expect(buildFlags(namespace, flags)).toEqual({
-        hello: "world",
-        name: "my_name"
+      expect(buildOptions(namespace, flags)).toEqual({
+        options: {
+          name: "my_name"
+        },
+        rawFlags: flags
       })
     })
 
@@ -248,7 +286,7 @@ describe("Execute", () => {
       const namespace: Namespace = {
         name: "test",
         description: "test desc",
-        option: [
+        options: [
           {
             title: "name",
             description: "flag desc",
@@ -264,10 +302,14 @@ describe("Execute", () => {
         n: "my_name"
       }
 
-      expect(buildFlags(namespace, flags)).toEqual({
-        hello: "world",
-        name: "my_name",
-        n: "my_name"
+      expect(buildOptions(namespace, flags)).toEqual({
+        options: {
+          name: "my_name"
+        },
+        rawFlags: {
+          hello: "world",
+          n: "my_name"
+        }
       })
     })
 
@@ -277,7 +319,7 @@ describe("Execute", () => {
       const namespace: Namespace = {
         name: "test",
         description: "test desc",
-        option: [
+        options: [
           {
             title: "name",
             description: "flag desc",
@@ -292,12 +334,195 @@ describe("Execute", () => {
         hello: "world"
       }
 
-      expect(buildFlags(namespace, flags)).toEqual({
-        hello: "world",
-        name: "my_default_name"
+      expect(buildOptions(namespace, flags)).toEqual({
+        options: {
+          name: "my_default_name"
+        },
+        rawFlags: {
+          hello: "world"
+        }
       })
     })
   })
 
-  // describe("Run Command", () => {})
+  describe("Runner build", () => {
+    it("should return the error on prepared Namespace", () => {
+      const run = jest.fn()
+
+      const ns: Namespace = {
+        name: "cli",
+        description: "my desc",
+        run
+      }
+
+      const result = getPreparedNamespace(ns, ["hello"])
+
+      expect(result).toEqual({
+        error: true,
+        namespace: ns,
+        parent: null,
+        plugins: [],
+        subCommand: false,
+        command: "hello"
+      })
+    })
+
+    it("should return the right prepared Namespace", () => {
+      const run = jest.fn()
+
+      const ns: Namespace = {
+        name: "cli",
+        description: "my desc",
+        acceptSubCommand: true,
+        run
+      }
+
+      const result = getPreparedNamespace(ns, ["hello"])
+
+      expect(result).toEqual({
+        error: false,
+        namespace: ns,
+        parent: null,
+        plugins: [],
+        subCommand: true,
+        command: "hello"
+      })
+    })
+
+    it("should return the right prepared Namespace", () => {
+      const run = jest.fn()
+
+      const ns: Namespace = {
+        name: "cli",
+        description: "my desc",
+        acceptSubCommand: false,
+        run
+      }
+
+      const result = getPreparedNamespace(ns, [])
+
+      expect(result).toEqual({
+        error: false,
+        namespace: ns,
+        parent: null,
+        plugins: [],
+        subCommand: false,
+        command: null
+      })
+    })
+
+    it("should return the right prepared Namespace", () => {
+      const run = jest.fn()
+
+      const exposed = {
+        name: "greet",
+        description: "my desc",
+        run
+      }
+
+      const ns: Namespace = {
+        name: "cli",
+        description: "my desc",
+        expose: [exposed],
+        run
+      }
+
+      expect(getPreparedNamespace(ns, [])).toEqual({
+        error: false,
+        namespace: ns,
+        parent: null,
+        plugins: [],
+        subCommand: false,
+        command: null
+      })
+
+      expect(getPreparedNamespace(ns, ["greet"])).toEqual({
+        error: false,
+        namespace: exposed,
+        parent: ns,
+        plugins: [],
+        subCommand: false,
+        command: "greet"
+      })
+
+      expect(getPreparedNamespace(ns, ["greet", "sub-greet"])).toEqual({
+        error: true,
+        namespace: exposed,
+        parent: ns,
+        plugins: [],
+        subCommand: false,
+        command: "sub-greet"
+      })
+
+      expect(
+        getPreparedNamespace(ns, ["greet", "sub-greet", "sub-sub-greet"])
+      ).toEqual({
+        error: true,
+        namespace: exposed,
+        parent: ns,
+        plugins: [],
+        subCommand: false,
+        command: "sub-greet"
+      })
+    })
+
+    it("should return the right prepared Namespace with plugins", () => {
+      const run = jest.fn()
+
+      const basicPlugin: Plugin = (namespace: Namespace) => namespace
+
+      const exposed = {
+        name: "greet",
+        description: "my desc",
+        plugins: [basicPlugin],
+        run
+      }
+
+      const ns: Namespace = {
+        name: "cli",
+        description: "my desc",
+        expose: [exposed],
+        plugins: [basicPlugin],
+        run
+      }
+
+      expect(getPreparedNamespace(ns, [])).toEqual({
+        error: false,
+        namespace: ns,
+        parent: null,
+        plugins: [basicPlugin],
+        subCommand: false,
+        command: null
+      })
+
+      expect(getPreparedNamespace(ns, ["greet"])).toEqual({
+        error: false,
+        namespace: exposed,
+        parent: ns,
+        plugins: [basicPlugin, basicPlugin],
+        subCommand: false,
+        command: "greet"
+      })
+
+      expect(getPreparedNamespace(ns, ["greet", "sub-greet"])).toEqual({
+        error: true,
+        namespace: exposed,
+        parent: ns,
+        plugins: [basicPlugin, basicPlugin],
+        subCommand: false,
+        command: "sub-greet"
+      })
+
+      expect(
+        getPreparedNamespace(ns, ["greet", "sub-greet", "sub-sub-greet"])
+      ).toEqual({
+        error: true,
+        namespace: exposed,
+        parent: ns,
+        plugins: [basicPlugin, basicPlugin],
+        subCommand: false,
+        command: "sub-greet"
+      })
+    })
+  })
 })

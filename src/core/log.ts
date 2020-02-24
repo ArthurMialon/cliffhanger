@@ -11,7 +11,7 @@ const log = {
   error: (...args: logType) =>
     console.log("❌", ...args.map(a => colors.red(a))),
   debug: (...args: logType) =>
-    global.debug && console.log("👨‍💻", ...args.map(a => colors.red(a))),
+    console.log("👨‍💻", ...args.map(a => colors.red(a))),
   ...colors
 }
 

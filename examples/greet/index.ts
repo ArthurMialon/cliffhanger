@@ -11,7 +11,7 @@ const greet: Namespace = {
   usage: 'greet --name="your name"',
   description: "My super personal CLI",
   plugins: [help],
-  option: [
+  options: [
     {
       title: "name",
       description: "Your name",
@@ -19,7 +19,7 @@ const greet: Namespace = {
       defaultValue: "awesome developer"
     }
   ],
-  run: ({ name }: any) => {
+  run: ({ options: { name } }: any) => {
     return Cliffhanger.log.success("Hello", name)
   }
 }

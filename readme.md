@@ -59,6 +59,7 @@ In progress
 - [ ] Add test to examples to prevent breaking changes
 - [x] Create a hook system
 - [ ] Improve Runners and accept more options (raw, hooks result etc..)
+- [ ] Flags validator
 
 ### Plugins System
 

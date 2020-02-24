@@ -10,7 +10,7 @@ const greet: Namespace = {
   name: "greet",
   usage: 'greet --name="your name"',
   description: "My super personal CLI",
-  option: [
+  options: [
     {
       title: "name",
       description: "Your name",

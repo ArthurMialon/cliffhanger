@@ -15,7 +15,7 @@ const helpNamespace = {
 const SEPARATOR = "\n"
 
 const run = (namespace: Namespace) => () => {
-  const { expose, option } = namespace
+  const { expose, options } = namespace
 
   const helpname = table({
     title: `Name: (${namespace.name})`,
@@ -40,10 +40,10 @@ const run = (namespace: Namespace) => () => {
     log.log(...helpUsage, SEPARATOR)
   }
 
-  if (option && option.length > 0) {
+  if (options && options.length > 0) {
     const helpExpose = table({
       title: "Available options:",
-      values: getAccepts(option)
+      values: getAccepts(options)
     })
 
     log.log(...helpExpose, SEPARATOR)
@@ -57,8 +57,6 @@ const run = (namespace: Namespace) => () => {
 
     log.log(...helpExpose, SEPARATOR)
   }
-
-  // log.log(namespace)
 }
 
 const getHelpNamespace = (namespace: Namespace) => {

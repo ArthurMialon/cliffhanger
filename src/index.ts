@@ -4,9 +4,11 @@ import execute from "./core/execute"
 import log from "./core/log"
 
 import help from "./plugins/help"
+import hooks from "./plugins/hooks"
 
 export const Plugins = {
-  help
+  help,
+  hooks
 }
 
 export default {
