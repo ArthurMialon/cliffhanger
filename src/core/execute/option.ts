@@ -1,5 +1,11 @@
 import { Namespace, Option, Flags, RunnerParams } from "src/types"
 
+/**
+ *
+ * @param option - Options definitions
+ * @param flags - Flags from arguments with minimist parsed
+ * @returns value - value from arguments (if not, return `null`)
+ */
 const getValueFromFlags = (option: Option, flags: Flags): any => {
   const keys = Object.keys(flags)
 
@@ -10,6 +16,13 @@ const getValueFromFlags = (option: Option, flags: Flags): any => {
   return matchKey ? flags[matchKey] : option.defaultValue || null
 }
 
+/**
+ * Merge options with flags values from arguments
+ *
+ * @param flags - Flags from arguments with minimist parsed
+ * @param options - Options definitions
+ * @returns merged values
+ */
 const addValue = (flags: Flags) => (option: Option) => ({
   ...option,
   value: getValueFromFlags(option, flags)
@@ -19,7 +32,7 @@ const addValue = (flags: Flags) => (option: Option) => ({
  * Build options from minimist parsing to options mapping in the namespace
  *
  * @param namespace - Namespace to run
- * @param options - List of options from minimist
+ * @param flags - Flags from arguments with minimist parsed
  * @returns buildedoptions - options object to pass to run
  */
 export default (namespace: Namespace, rawFlags: Flags): RunnerParams => {
