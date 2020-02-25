@@ -1,9 +1,12 @@
-import { Namespace, Plugin } from "src/types"
+import { Namespace } from "src/types"
 
 import { ParsedArgs } from "minimist"
 import minimist from "minimist"
 
-import execPlugins from "./plugin"
+import log from "../log"
+
+import withPlugins from "./plugin"
+import getRunInfo from "./info"
 import buildOptions from "./option"
 
 /**
@@ -32,70 +35,29 @@ export const runCommand = async (
   namespace: Namespace,
   args: ParsedArgs
 ): Promise<any> => {
-  const { _: commands, ...flags } = args
+  const { _: command, ...flags } = args
 
-  const runnable = commands.reduce(
-    (
-      acc: {
-        notFoundInNamespace: boolean
-        namespace: Namespace
-        askedCommand: string
-        parent?: Namespace
-        plugins?: Plugin[]
-      },
-      command
-    ) => {
-      const { notFoundInNamespace, namespace, plugins = [] } = acc
+  // Namespace and exposed with plugins
+  const preparedNamespace = withPlugins(namespace)
 
-      acc.plugins = plugins.concat(namespace.globalPlugins || [])
+  // Info about the namespace to run
+  const runInfo = getRunInfo(preparedNamespace, command)
 
-      if (notFoundInNamespace) return acc
-
-      const subCommand = namespace.expose?.find(c => c.name === command)
-
-      if (subCommand) {
-        return {
-          notFoundInNamespace: false,
-          namespace: execPlugins(subCommand, acc.plugins),
-          askedCommand: command
-        }
-      }
-
-      return {
-        ...acc,
-        notFoundInNamespace: true,
-        askedCommand: command,
-        parent: namespace
-      }
-    },
-    {
-      notFoundInNamespace: false,
-      namespace: execPlugins(namespace, namespace.globalPlugins),
-      askedCommand: namespace.name,
-      plugins: []
-    }
-  )
-
-  if (runnable.notFoundInNamespace) {
-    if (runnable.parent?.acceptSubCommand) {
-      const buildedOptions = buildOptions(runnable.namespace, flags)
-
-      const parameters = {
-        ...buildedOptions,
-        subCommand: runnable.askedCommand
-      }
-
-      return runnable.parent.run(parameters)
-    }
-
-    return console.error(
-      `command <${runnable.askedCommand}> not found in namespace ${runnable.namespace.name}\n`
+  // No runner has been found, command mistake
+  if (runInfo.error) {
+    return log.error(
+      `cannot find command <${runInfo.command}> in namespace <${runInfo.namespace.name}>`
     )
   }
 
-  const buildedOptions = buildOptions(runnable.namespace, flags)
+  // Let's build options based on namespace and plugins definitions
+  const options = buildOptions(runInfo.namespace, flags)
 
-  return runnable.namespace.run(buildedOptions)
+  // Run the command
+  return runInfo.namespace.run({
+    ...options,
+    subCommand: runInfo.subCommand ? runInfo.command : null
+  })
 }
 
 export default { runCommand, init }

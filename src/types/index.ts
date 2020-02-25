@@ -9,7 +9,7 @@ export type Flags = {
 export interface RunnerParams {
   options: Flags
   rawFlags: Flags
-  subCommand?: string
+  subCommand?: string | null
 }
 
 export type RunnerWithFlags = (arg0: RunnerParams) => Promise<any> | any

@@ -1,4 +1,4 @@
-import { Namespace, Plugin } from "src/types"
+import { Namespace } from "src/types"
 
 export const getExposed = (
   namespace: Namespace,
@@ -11,25 +11,8 @@ export const getExposed = (
   return exposed || null
 }
 
-// export const getExposed = (namespace: Namespace, command: string) => {
-//   const exposedNamespace = getExposed(namespace, command)
-
-//   if (!exposedNamespace && namespace.acceptSubCommand) {
-//     return {
-//       namespace,
-//       subCommand: true
-//     }
-//   }
-
-//   return {
-//     namespace: exposedNamespace,
-//     subCommand: false
-//   }
-// }
-
 interface PreparedNamespace {
   namespace: Namespace
-  plugins: Plugin[]
   subCommand: boolean
   parent: Namespace | null
   error: boolean
@@ -39,7 +22,6 @@ interface PreparedNamespace {
 const buildPrepareNamespace = (namespace: Namespace, commands: string[]) => {
   const base: PreparedNamespace = {
     namespace,
-    plugins: [...(namespace.globalPlugins || []), ...(namespace.plugins || [])],
     subCommand: false,
     parent: null,
     error: false,
@@ -70,8 +52,7 @@ const buildPrepareNamespace = (namespace: Namespace, commands: string[]) => {
       return {
         ...prepared,
         parent: prepared.namespace,
-        namespace: exposedNamespace,
-        plugins: [...prepared.plugins, ...(exposedNamespace.plugins || [])]
+        namespace: exposedNamespace
       }
     },
     base

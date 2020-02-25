@@ -1,15 +1,33 @@
 import { Namespace, Plugin } from "src/types"
 
 /**
- * Enhance a Namespace by running Plugins on it.
- * See it as a compose function
+ * Enhance a Namespace by running Plugins on it and its sub commands.
+ * See it as a recursive compose function
  *
  * @param namespace - Namespace to run
- * @param globalPlugins - Parents plugins
+ * @param parentPlugins - Parents plugins
  * @returns namespace - Enhance namespace with plugins
  */
-export default (namespace: Namespace, globalPlugins: Plugin[] = []) => {
-  const plugins = globalPlugins.concat(namespace.plugins || [])
+const withPlugins = (
+  namespace: Namespace,
+  globalPlugins: Plugin[] = []
+): Namespace => {
+  globalPlugins = globalPlugins.concat(...(namespace.globalPlugins || []))
 
-  return plugins.reduce((acc: Namespace, plugin) => plugin(acc), namespace)
+  const plugins = namespace.plugins || []
+
+  const pluggedNamespace: Namespace = [...globalPlugins, ...plugins].reduce(
+    (acc, plugin) => plugin(acc),
+    namespace
+  )
+
+  const exposed = pluggedNamespace.expose?.map(expose =>
+    withPlugins(expose, globalPlugins)
+  )
+
+  pluggedNamespace.expose = exposed
+
+  return pluggedNamespace
 }
+
+export default withPlugins
