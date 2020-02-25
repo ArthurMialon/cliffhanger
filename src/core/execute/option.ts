@@ -1,4 +1,4 @@
-import { Namespace, Option, Flags, RunnerParams } from "src/types"
+import { Namespace, Option, Flags } from "src/types"
 
 /**
  *
@@ -35,7 +35,7 @@ const addValue = (flags: Flags) => (option: Option) => ({
  * @param flags - Flags from arguments with minimist parsed
  * @returns buildedoptions - options object to pass to run
  */
-export default (namespace: Namespace, rawFlags: Flags): RunnerParams => {
+export default (namespace: Namespace, rawFlags: Flags) => {
   const nsOptions = namespace.options || []
 
   const options = nsOptions.map(addValue(rawFlags)).reduce(
@@ -46,5 +46,5 @@ export default (namespace: Namespace, rawFlags: Flags): RunnerParams => {
     {}
   )
 
-  return { options, rawFlags }
+  return { options, flags: rawFlags }
 }

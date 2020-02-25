@@ -35,7 +35,7 @@ export const runCommand = async (
   namespace: Namespace,
   args: ParsedArgs
 ): Promise<any> => {
-  const { _: command, ...flags } = args
+  const { _: command, ...parsedFlags } = args
 
   // Namespace and exposed with plugins
   const preparedNamespace = withPlugins(namespace)
@@ -51,13 +51,14 @@ export const runCommand = async (
   }
 
   // Let's build options based on namespace and plugins definitions
-  const options = buildOptions(runInfo.namespace, flags)
+  const { options, flags } = buildOptions(runInfo.namespace, parsedFlags)
 
   // Run the command
-  return runInfo.namespace.run({
-    ...options,
-    subCommand: runInfo.subCommand ? runInfo.command : null
-  })
+  return runInfo.namespace.run(
+    options,
+    runInfo.subCommand ? runInfo.command : null,
+    { flags }
+  )
 }
 
 export default { runCommand, init }

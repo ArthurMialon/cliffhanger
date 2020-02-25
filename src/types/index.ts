@@ -6,13 +6,15 @@ export type Flags = {
   [key: string]: any
 }
 
-export interface RunnerParams {
-  options: Flags
-  rawFlags: Flags
-  subCommand?: string | null
+export interface Raw {
+  flags: Flags
 }
 
-export type RunnerWithFlags = (arg0: RunnerParams) => Promise<any> | any
+export type RunnerWithFlags = (
+  options: Flags,
+  subCommand: string | null,
+  raw: Raw
+) => Promise<any> | any
 export type RunnerWithoutFlags = () => Promise<any> | any
 
 export type Runner = RunnerWithFlags | RunnerWithoutFlags

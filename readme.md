@@ -59,8 +59,11 @@ In progress
 - [x] Add jest testing
 - [ ] Add test to examples to prevent breaking changes
 - [x] Create a hook system
-- [ ] Improve Runners and accept more options (raw, hooks result etc..)
+- [x] Improve Runners and accept more options (raw, hooks result etc..)
 - [ ] Flags validator
+- [ ] Imrove runner parameters
+  - from big objects to spread arguments
+- [ ] Add the full asked command in raws
 
 ### Plugins System
 
