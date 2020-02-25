@@ -22,6 +22,56 @@ yarn add @cliffhanger/core
 npm install @cliffhanger/core
 ```
 
+## Example
+
+```sh
+$ my-command greet --name=john
+> ✅ Hello john
+```
+
+```ts
+import { Namespace } from "@cliffhange-hub/core"
+
+import Cliffhanger from "@cliffhange-hub/core"
+
+import { Plugins } from "@cliffhange-hub/core"
+
+// Create a command, we call this a namespace
+const greet: Namespace = {
+  name: "greet",
+  usage: 'greet --name="your name"',
+  description: "My super personal CLI",
+  plugins: [Plugins.help],
+  options: [
+    {
+      title: "name",
+      description: "Your name",
+      shorthand: ["n"],
+      defaultValue: "awesome developer"
+    }
+  ],
+  run: ({ name }) => {
+    return Cliffhanger.log.success("Hello", name)
+  }
+}
+
+// Set your command in a a globale namespace
+const CLI = {
+  name: "example",
+  description: "My super personal CLI",
+  expose: [greet],
+  plugins: [help],
+  run: () => {
+    return Cliffhanger.log.success("An awesome CLI created with Cliffhanger")
+  }
+}
+
+const [, , ...args] = process.argv
+
+// Run !
+Cliffhanger.execute.init(CLI, args
+```
+
 ## Documentation
 
 In progress
@@ -64,6 +114,7 @@ In progress
 - [ ] Imrove runner parameters
   - from big objects to spread arguments
 - [ ] Add the full asked command in raws
+- [ ] Global flags
 
 ### Plugins System
 
@@ -78,3 +129,7 @@ In progress
 - [ ] Get Git context (via NodeGit)
 - [ ] Get KubeCtl context
 - [ ] Commander and interactive prompt plugin
+
+```
+
+```

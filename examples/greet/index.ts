@@ -19,7 +19,7 @@ const greet: Namespace = {
       defaultValue: "awesome developer"
     }
   ],
-  run: ({ options: { name } }: any) => {
+  run: ({ name }) => {
     return Cliffhanger.log.success("Hello", name)
   }
 }
