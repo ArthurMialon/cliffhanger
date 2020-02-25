@@ -3,7 +3,7 @@ import colors from "colors/safe"
 type logType = any[]
 
 const log = {
-  log: console.log,
+  log: (...args: logType) => console.log(...args),
   info: (...args: logType) =>
     console.log("📫", ...args.map(a => colors.blue(a))),
   success: (...args: logType) =>

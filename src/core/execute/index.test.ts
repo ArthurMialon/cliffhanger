@@ -2,7 +2,7 @@ import { Namespace, Plugin } from "src/types"
 
 import { init } from "./index"
 
-import execPlugins from "./plugin"
+import withPlugins from "./plugin"
 import buildOptions from "./option"
 import getRunInfo from "./info"
 
@@ -187,7 +187,7 @@ describe("Execute", () => {
         run
       }
 
-      const enhance = execPlugins(namespace, [])
+      const enhance = withPlugins(namespace, [])
 
       expect(enhance).toBe(namespace)
     })
@@ -209,10 +209,47 @@ describe("Execute", () => {
         run
       }
 
-      const enhance = execPlugins(namespace, [])
+      const enhance = withPlugins(namespace, [])
 
       expect(enhance.run).toBe(run2)
       expect(enhance.name).toBe("test-enhanced")
+    })
+
+    it("should enhance namespace and exposed with plugins", () => {
+      const run = jest.fn()
+      const run2 = jest.fn()
+
+      const testPlugin: Plugin = n => ({
+        ...n,
+        name: n.name + "-enhanced",
+        run: run2
+      })
+
+      const subNamespace: Namespace = {
+        name: "test",
+        description: "test desc",
+        plugins: [testPlugin],
+        run
+      }
+
+      const namespace: Namespace = {
+        name: "test",
+        description: "test desc",
+        expose: [subNamespace],
+        plugins: [testPlugin],
+        run
+      }
+
+      const enhance = withPlugins(namespace, [])
+
+      expect(enhance.run).toBe(run2)
+      expect(enhance.name).toBe("test-enhanced")
+      expect(enhance.expose?.length).toBe(1)
+
+      if (enhance.expose && enhance.expose.length > 1) {
+        expect(enhance.expose[0].name).toBe("test-enhanced")
+        expect(enhance.expose[0].run).toBe(run2)
+      }
     })
 
     it("should enhance namespace with its plugins and global ones", () => {
@@ -229,10 +266,11 @@ describe("Execute", () => {
         name: "test",
         description: "test desc",
         plugins: [testPlugin],
+        globalPlugins: [testPlugin],
         run
       }
 
-      const enhance = execPlugins(namespace, [testPlugin])
+      const enhance = withPlugins(namespace)
 
       expect(enhance.run).toBe(run2)
       expect(enhance.name).toBe("test-enhanced-enhanced")
@@ -360,6 +398,33 @@ describe("Execute", () => {
       const ns: Namespace = {
         name: "cli",
         description: "my desc",
+        run
+      }
+
+      const result = getRunInfo(ns, ["hello"])
+
+      expect(result).toEqual({
+        error: true,
+        namespace: ns,
+        parent: null,
+        subCommand: false,
+        command: "hello"
+      })
+    })
+
+    it("should return the error on prepared Namespace with error 2", () => {
+      const run = jest.fn()
+
+      const subNS: Namespace = {
+        name: "cli-sub-command",
+        description: "my desc",
+        run
+      }
+
+      const ns: Namespace = {
+        name: "cli",
+        description: "my desc",
+        expose: [subNS],
         run
       }
 

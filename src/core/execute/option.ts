@@ -13,7 +13,7 @@ const getValueFromFlags = (option: Option, flags: Flags): any => {
     [option.title].concat(option.shorthand || []).includes(k)
   )
 
-  return matchKey ? flags[matchKey] : option.defaultValue || null
+  return matchKey ? flags[matchKey] : option.defaultValue
 }
 
 /**
