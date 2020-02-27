@@ -2,3 +2,4 @@ src/
 tsconfig.json
 .github/
 examples
+*.test.ts

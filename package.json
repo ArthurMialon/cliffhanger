@@ -1,6 +1,6 @@
 {
   "name": "@cliffhanger-hub/core",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.js",
   "scripts": {
@@ -11,7 +11,8 @@
     "example-greet": "ts-node -r tsconfig-paths/register examples/greet",
     "example-plugin": "ts-node -r tsconfig-paths/register examples/global-plugins",
     "example-hooks": "ts-node -r tsconfig-paths/register examples/hooks",
-    "test-dev": "ts-node -r tsconfig-paths/register src/test-cli.ts"
+    "test-dev": "ts-node -r tsconfig-paths/register src/test-cli.ts",
+    "release": "npm publish npm"
   },
   "repository": {
     "type": "git",
@@ -30,16 +31,16 @@
     "@types/node": "^13.7.1",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "ts-jest": "^25.2.1",
+    "@types/jest": "^25.1.3",
+    "jest": "^25.1.0"
   },
   "dependencies": {
-    "@types/jest": "^25.1.3",
     "cli-table": "^0.3.1",
     "cli-table3": "^0.5.1",
     "colors": "^1.4.0",
-    "jest": "^25.1.0",
     "minimist": "^1.2.0",
-    "minimist-options": "^4.0.2",
-    "ts-jest": "^25.2.1"
+    "minimist-options": "^4.0.2"
   }
 }
