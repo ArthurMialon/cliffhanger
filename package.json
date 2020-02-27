@@ -1,6 +1,6 @@
 {
   "name": "@cliffhanger-hub/core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "dist/index.js",
   "types": "dist/index.d.js",
   "scripts": {
