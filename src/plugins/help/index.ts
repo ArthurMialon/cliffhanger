@@ -67,6 +67,8 @@ const getHelpNamespace = (namespace: Namespace) => {
 }
 
 const help: Plugin = (namespace: Namespace) => {
+  if (namespace.name === "help") return namespace
+
   const expose = (namespace.expose || []).concat(getHelpNamespace(namespace))
 
   return {

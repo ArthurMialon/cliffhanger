@@ -10,7 +10,6 @@ const greet: Namespace = {
   name: "greet",
   usage: 'greet --name="your name"',
   description: "My super personal CLI",
-  plugins: [help],
   options: [
     {
       title: "name",
@@ -28,7 +27,7 @@ const CLI = {
   name: "hello",
   description: "My super personal CLI",
   expose: [greet],
-  plugins: [help],
+  globalPlugins: [help],
   run: () => {
     return Cliffhanger.log.success("An awesome CLI created with Cliffhanger")
   }
