@@ -13,7 +13,8 @@
     "example-hooks": "ts-node -r tsconfig-paths/register examples/hooks",
     "test-dev": "ts-node -r tsconfig-paths/register src/test-cli.ts",
     "preversion": "yarn test && yarn build",
-    "postversion": "git push --tags && yarn publish . --tag $npm_package_version && git push && echo \"Successfully released version $npm_package_version!\""
+    "postversion": "git push --tags && yarn publish . --tag $npm_package_version && git push && echo \"Successfully released version $npm_package_version!\"",
+    "release": "yarn version"
   },
   "repository": {
     "type": "git",
