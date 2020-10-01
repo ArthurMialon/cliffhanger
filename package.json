@@ -22,7 +22,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@actions/core": "^1.2.2",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^2.1.0",
     "@types/cli-table": "^0.3.0",
     "@types/colors": "^1.2.1",
